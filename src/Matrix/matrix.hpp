@@ -1,13 +1,13 @@
-#ifndef NN_MATRIX_H
-#define NN_MATRIX_H
+#ifndef MATRIX_H
+#define MATRIX_H
 
-#include <vector>
+#include <iostream>
 
 template <class Number>
 class Matrix {
 public:
   /* Constructors */
-  Matrix<Number>(size_t heights, size_t width);
+  Matrix<Number>(size_t height, size_t width);
   ~Matrix<Number>();
 
   /* Getters */
@@ -31,6 +31,11 @@ private:
   size_t width;
   Number* array;
 };
+
+/*
+template <class Number>
+extern void addWrapper(Number* m1, Number* m2, Number* m3, size_t size);
+*/
 
 #include "matrix.hxx"
 

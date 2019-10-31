@@ -10,7 +10,6 @@ Matrix<Number>::Matrix(size_t height, size_t width) {
   srand(time(NULL));
   for (size_t i=0; i < height * width; i++) {
       this->array[i] = -1 + Number(rand()) / Number(RAND_MAX) * 2;
-
   }
 }
 
@@ -32,9 +31,7 @@ size_t Matrix<Number>::getWidth() const {
 template <class Number>
 Matrix<Number> Matrix<Number>::add(const Matrix& m) const {
   Matrix result(height, width);
-  for (size_t i=0; i < this->height * this->width; i++) {
-      result->array[i] = this->array[i] + m.array[i];
-  }
+  addWrapper(this->array, m.array, result.array, this->width * this->height);
   return result;
 }
 
@@ -71,9 +68,9 @@ void Matrix<Number>::display() const {
     for (size_t j=0; j < this->width; j++) {
       std::cout << this->array[i * this->width + j] << " ";
     }
-    std::cout << std::endl;
+    std::cout << "\n";
   }
-  std::cout << std::endl;
+  std::cout << "\n";
 }
 
 template <class Number>
