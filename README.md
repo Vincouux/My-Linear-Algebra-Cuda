@@ -1,2 +1,5 @@
 # My-Linear-Algebra-CPP
-Personal Matrix class implementation  in C++
+
+```Simple Matrix Class implementation in C++ using Cuda GPU Programming.```
+
+> Work In Progress
