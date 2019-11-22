@@ -8,9 +8,9 @@ all: run
 
 .PHONY: run
 run:
-	$(NVCC) $(NVFLAGS) -c src/Matrix/matrix.cu
+	$(NVCC) $(NVFLAGS) -c src/Matrix/kernels.cu
 	$(CXX) $(CXXFLAGS) -c -I/usr/local/cuda-5.5/include src/main.cpp
-	$(CXX) -o main main.o matrix.o -L/usr/local/cuda-5.5/lib64 -lcudart -lcurand -lcuda
+	$(CXX) -o main main.o kernels.o -L/usr/local/cuda-5.5/lib64 -lcudart -lcurand -lcuda
 
 .PHONY: clean
 clean:

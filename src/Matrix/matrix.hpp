@@ -4,11 +4,14 @@
 #include <iostream>
 #include <time.h>
 
+#include "kernels.cuh"
+
 template <class Number>
 class Matrix {
 public:
   /* Constructors */
   Matrix<Number>(size_t height, size_t width);
+  Matrix<Number>(std::initializer_list<std::initializer_list<Number>> array);
   ~Matrix<Number>();
 
   /* Getters */
@@ -34,20 +37,34 @@ private:
 };
 
 template <class Number>
-void addWrapper(int* m1, int* m2, int* m3, size_t size);
-
-template <class Number>
 Matrix<Number>::Matrix(size_t height, size_t width) {
 	static_assert(std::is_same<Number, int>::value ||
-		std::is_same<Number, float>::value ||
-		std::is_same<Number, double>::value,
-		"Type not allowed. Use <int>, <float> or <double>.");
+		            std::is_same<Number, float>::value ||
+            		std::is_same<Number, double>::value,
+            		"Type not allowed. Use <int>, <float> or <double>.");
 	this->height = height;
 	this->width = width;
 	this->array = (Number*)calloc(height * width, sizeof(Number));
 	srand(time(NULL));
 	for (size_t i = 0; i < height * width; i++) {
 		this->array[i] = -1 + Number(rand()) / Number(RAND_MAX) * 2;
+	}
+}
+
+template <class Number>
+Matrix<Number>::Matrix(std::initializer_list<std::initializer_list<Number>> arr) {
+	static_assert(std::is_same<Number, int>::value ||
+            		std::is_same<Number, float>::value ||
+            		std::is_same<Number, double>::value,
+            		"Type not allowed. Use <int>, <float> or <double>.");
+	this->height = (int)(arr.begin())->size();
+	this->width = (int)arr.size();
+	this->array = (Number*)calloc(this->height * this->width, sizeof(Number));
+	srand(time(NULL));
+	for (size_t i = 0; i < height; i++) {
+    for (size_t j = 0; j < width; j++) {
+      this->array[i * width + j] = (arr.begin() + i)->begin()[j];
+    }
 	}
 }
 
@@ -69,7 +86,7 @@ size_t Matrix<Number>::getWidth() const {
 template <class Number>
 Matrix<Number> Matrix<Number>::add(const Matrix& m) const {
 	Matrix result(height, width);
-	addWrapper(this->array, m.array, result.array, this->width * this->height);
+  Wrapper().add(this->array, m.array, result.array, this->width * this->height);
 	return result;
 }
 
