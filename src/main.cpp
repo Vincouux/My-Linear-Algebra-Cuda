@@ -9,6 +9,15 @@ int main() {
 
 	Matrix<int> c = a + b;
 	c.display();
-	
+
+	Matrix<float> d = Matrix<float>(10, 10);
+	d.display();
+
+	Matrix<float> e = Matrix<float>(10, 10);
+	e.display();
+
+	Matrix<float> f = e + d;
+	f.display();
+
 	return 0;
 }
