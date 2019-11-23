@@ -1,11 +1,11 @@
 # My-Linear-Algebra-CPP
 
-### Simple Matrix Class implementation in C++ using Cuda GPU Programming.
+**Simple Matrix Class implementation in C++ using Cuda GPU Programming.**
 
 
 ## How it works ?
 
-### Instantiate a new Matrix
+### Instantiate a new Matrix
 
 ```cpp
 /* With random values */
