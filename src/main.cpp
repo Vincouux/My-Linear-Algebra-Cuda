@@ -1,23 +1,38 @@
 #include "Matrix/matrix.hpp"
 
+#include <chrono>
+
+uint64_t timeSinceEpochMillisec() {
+  using namespace std::chrono;
+  return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+}
+
 int main() {
-	Matrix<int> a = Matrix<int>({{1, 2}, {3, 4}});
-	a.display();
+	/* Matrix A */
+	Matrix<int> A = Matrix<int>(2000, 2000);
+	//A.display();
 
-	Matrix<int> b = Matrix<int>({{1, 2}, {3, 4}});
-	b.display();
+	/* Matrix B */
+	Matrix<int> B = Matrix<int>(2000, 2000);
+	//B.display();
 
-	Matrix<int> c = a + b;
-	c.display();
+	/* Matrix C on CPU */
+	printf("Starting CPU\n");
+	uint64_t start = timeSinceEpochMillisec();
+	Matrix<int> C = A.dot(B, false);
+	uint64_t end = timeSinceEpochMillisec();
+	printf("It took %li ms on CPU\n", end - start);
+	//C.display();
 
-	Matrix<float> d = Matrix<float>(10, 10);
-	d.display();
+	/* Matrix D on GPU */
+	printf("Starting GPU\n");
+	start = timeSinceEpochMillisec();
+	Matrix<int> D = A.dot(B, true);
+	end = timeSinceEpochMillisec();
+	printf("It took %li ms on GPU\n", end - start);
+	//D.display();
 
-	Matrix<float> e = Matrix<float>(10, 10);
-	e.display();
-
-	Matrix<float> f = e + d;
-	f.display();
+  printf("Matrix C == D: %s\n", C == D ? "Yes": "No");
 
 	return 0;
 }
