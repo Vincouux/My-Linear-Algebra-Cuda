@@ -7,8 +7,10 @@ int main() {
 	Matrix<float> A = Matrix<float>({{0.1, 0.2}, {0.3, 0.4}, {0.5, 0.5}});
 	A.display();
 
-    Matrix<float> B = 1.f / (1.f + (0.f - A).exponential());
+    Matrix<float> B = A.power(2);
     B.display();
+
+    std::cout << A.sum();
 
 	return 0;
 }

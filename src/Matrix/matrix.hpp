@@ -29,6 +29,8 @@ public:
     Matrix<Number> divide(Number m) const;
     Matrix<Number> inverse(Number m) const;
     Matrix<Number> exponential() const;
+    Matrix<Number> power(unsigned n) const;
+    Number sum() const;
     bool eq(const Matrix<Number>& m) const;
     Matrix<Number> transpose() const;
 
@@ -206,6 +208,28 @@ Matrix<Number> Matrix<Number>::exponential() const {
     for (size_t i = 0; i < this->height; i++) {
         for (size_t j = 0; j < this->width; j++) {
             result.setElementAt(i, j, exp(this->getElementAt(i, j)));
+        }
+    }
+    return result;
+}
+
+template <class Number>
+Matrix<Number> Matrix<Number>::power(unsigned n) const {
+    Matrix result(height, width);
+    for (size_t i = 0; i < this->height; i++) {
+        for (size_t j = 0; j < this->width; j++) {
+            result.setElementAt(i, j, pow(this->getElementAt(i, j), n));
+        }
+    }
+    return result;
+}
+
+template <class Number>
+Number Matrix<Number>::sum() const {
+    Number result = 0;
+    for (size_t i = 0; i < this->height; i++) {
+        for (size_t j = 0; j < this->width; j++) {
+            result += this->getElementAt(i, j);
         }
     }
     return result;
