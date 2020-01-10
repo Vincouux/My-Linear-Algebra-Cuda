@@ -48,7 +48,6 @@ Matrix<Number>::Matrix(size_t height, size_t width) {
     this->height = height;
     this->width = width;
     this->array = (Number*)calloc(height * width, sizeof(Number));
-    srand(time(NULL));
     for (size_t i = 0; i < height * width; i++) {
         this->array[i] = -1 + rand() / Number(RAND_MAX) * 2;
     }
