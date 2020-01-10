@@ -2,6 +2,7 @@
 #define MATRIX_H
 
 #include <iostream>
+#include <cmath>
 
 #include "kernels.cuh"
 
@@ -21,8 +22,14 @@ public:
 
     /* Operations */
     Matrix<Number> add(const Matrix& m, bool gpu = true) const;
+    Matrix<Number> add(Number m) const;
+    Matrix<Number> sub(Number m) const;
     Matrix<Number> dot(const Matrix<Number>& m, bool gpu = true) const;
-    bool eq(const Matrix<Number>& m, bool gpu = false) const;
+    Matrix<Number> dot(Number m) const;
+    Matrix<Number> divide(Number m) const;
+    Matrix<Number> inverse(Number m) const;
+    Matrix<Number> exponential() const;
+    bool eq(const Matrix<Number>& m) const;
     Matrix<Number> transpose() const;
 
     /* Operators */
@@ -47,7 +54,7 @@ Matrix<Number>::Matrix(size_t height, size_t width) {
                   "Type not allowed. Use <int>, <float> or <double>.");
     this->height = height;
     this->width = width;
-    this->array = (Number*)calloc(height * width, sizeof(Number));
+    this->array = new Number[this->height * this->width];
     for (size_t i = 0; i < height * width; i++) {
         this->array[i] = -1 + rand() / Number(RAND_MAX) * 2;
     }
@@ -61,7 +68,7 @@ Matrix<Number>::Matrix(std::initializer_list<std::initializer_list<Number>> arr)
                   "Type not allowed. Use <int>, <float> or <double>.");
     this->height = (int)arr.size();
     this->width = (int)arr.begin()->size();
-    this->array = (Number*)calloc(this->height * this->width, sizeof(Number));
+    this->array = new Number[this->height * this->width];
     srand(time(NULL));
     for (size_t i = 0; i < height; i++) {
         for (size_t j = 0; j < width; j++) {
@@ -72,7 +79,7 @@ Matrix<Number>::Matrix(std::initializer_list<std::initializer_list<Number>> arr)
 
 template <class Number>
 Matrix<Number>::~Matrix() {
-    free(this->array);
+    delete[] this->array;
 }
 
 template <class Number>
@@ -119,6 +126,28 @@ Matrix<Number> Matrix<Number>::add(const Matrix& m, bool gpu) const {
 }
 
 template <class Number>
+Matrix<Number> Matrix<Number>::add(Number m) const {
+    Matrix result(height, width);
+    for (size_t i = 0; i < this->height; i++) {
+        for (size_t j = 0; j < this->width; j++) {
+            result.setElementAt(i, j, this->getElementAt(i, j) + m);
+        }
+    }
+    return result;
+}
+
+template <class Number>
+Matrix<Number> Matrix<Number>::sub(Number m) const {
+    Matrix result(height, width);
+    for (size_t i = 0; i < this->height; i++) {
+        for (size_t j = 0; j < this->width; j++) {
+            result.setElementAt(i, j, this->getElementAt(i, j) - m);
+        }
+    }
+    return result;
+}
+
+template <class Number>
 Matrix<Number> Matrix<Number>::dot(const Matrix& m, bool gpu) const {
     Matrix<Number> result(this->height, m.width);
     if (gpu) {
@@ -139,16 +168,55 @@ Matrix<Number> Matrix<Number>::dot(const Matrix& m, bool gpu) const {
 }
 
 template <class Number>
-bool Matrix<Number>::eq(const Matrix& m, bool gpu) const {
-    if (gpu) {
-        printf("Method not implemented for GPU\n");
-        // Fix Me
-    } else {
-        for (size_t i = 0; i < this->height; i++) {
-            for (size_t j = 0; j < m.width; j++) {
-                if (this->getElementAt(i, j) != m.getElementAt(i, j)) {
-                    return false;
-                }
+Matrix<Number> Matrix<Number>::dot(Number m) const {
+    Matrix result(height, width);
+    for (size_t i = 0; i < this->height; i++) {
+        for (size_t j = 0; j < this->width; j++) {
+            result.setElementAt(i, j, this->getElementAt(i, j) * m);
+        }
+    }
+    return result;
+}
+
+template <class Number>
+Matrix<Number> Matrix<Number>::divide(Number m) const {
+    Matrix result(height, width);
+    for (size_t i = 0; i < this->height; i++) {
+        for (size_t j = 0; j < this->width; j++) {
+            result.setElementAt(i, j, this->getElementAt(i, j) / m);
+        }
+    }
+    return result;
+}
+
+template <class Number>
+Matrix<Number> Matrix<Number>::inverse(Number m) const {
+    Matrix result(height, width);
+    for (size_t i = 0; i < this->height; i++) {
+        for (size_t j = 0; j < this->width; j++) {
+            result.setElementAt(i, j, m / this->getElementAt(i, j));
+        }
+    }
+    return result;
+}
+
+template <class Number>
+Matrix<Number> Matrix<Number>::exponential() const {
+    Matrix result(height, width);
+    for (size_t i = 0; i < this->height; i++) {
+        for (size_t j = 0; j < this->width; j++) {
+            result.setElementAt(i, j, exp(this->getElementAt(i, j)));
+        }
+    }
+    return result;
+}
+
+template <class Number>
+bool Matrix<Number>::eq(const Matrix& m) const {
+    for (size_t i = 0; i < this->height; i++) {
+        for (size_t j = 0; j < m.width; j++) {
+            if (this->getElementAt(i, j) != m.getElementAt(i, j)) {
+                return false;
             }
         }
     }
@@ -190,6 +258,46 @@ Matrix<Number> Matrix<Number>::operator * (const Matrix& m) {
 template <class Number>
 bool Matrix<Number>::operator == (const Matrix& m) {
     return this->eq(m);
+}
+
+template <class Number>
+Matrix<Number> operator + (const Matrix<Number>& m, Number n) {
+    return m.add(n);
+}
+
+template <class Number>
+Matrix<Number> operator + (Number n, const Matrix<Number>& m) {
+    return m.add(n);
+}
+
+template <class Number>
+Matrix<Number> operator - (const Matrix<Number>& m, Number n) {
+    return m.sub(n);
+}
+
+template <class Number>
+Matrix<Number> operator - (Number n, const Matrix<Number>& m) {
+    return (Number)(-1) * m + n;
+}
+
+template <class Number>
+Matrix<Number> operator * (const Matrix<Number>& m, Number n) {
+    return m.dot(n);
+}
+
+template <class Number>
+Matrix<Number> operator * (Number n, const Matrix<Number>& m) {
+    return m.dot(n);
+}
+
+template <class Number>
+Matrix<Number> operator / (const Matrix<Number>& m, Number n) {
+    return m.divide(n);
+}
+
+template <class Number>
+Matrix<Number> operator / (Number n, const Matrix<Number>& m) {
+    return m.inverse(n);
 }
 
 #endif
