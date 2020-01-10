@@ -74,14 +74,14 @@ __host__ void dotKernelWrapper(Number* m1, Number* m2, Number* m3, int resultRow
     Number* d_m3;
 
     // Allocating in Device Memory.
-    int size = resultRows * resultColumns;
-    cudaMalloc(&d_m1, size * sizeof(Number));
-    cudaMalloc(&d_m2, size * sizeof(Number));
+    size_t size = resultRows * resultColumns;
+    cudaMalloc(&d_m1, resultRows * interiorColumns * sizeof(Number));
+    cudaMalloc(&d_m2, interiorColumns * resultColumns * sizeof(Number));
     cudaMalloc(&d_m3, size * sizeof(Number));
 
     // Copying in Device Memory.
-    cudaMemcpy(d_m1, m1, size * sizeof(Number), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_m2, m2, size * sizeof(Number), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_m1, m1, resultRows * interiorColumns * sizeof(Number), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_m2, m2, interiorColumns * resultColumns * sizeof(Number), cudaMemcpyHostToDevice);
     cudaMemcpy(d_m3, m3, size * sizeof(Number), cudaMemcpyHostToDevice);
 
     // Calling the kernel function.
