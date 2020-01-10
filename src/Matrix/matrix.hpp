@@ -32,6 +32,8 @@ public:
     Matrix<Number> power(unsigned n) const;
     Number sum() const;
     void apply(Number func(Number));
+    Matrix<Number> getLine(unsigned n) const;
+    Matrix<Number> getRow(unsigned n) const;
     bool eq(const Matrix<Number>& m) const;
     Matrix<Number> transpose() const;
 
@@ -97,7 +99,7 @@ size_t Matrix<Number>::getWidth() const {
 
 template <class Number>
 Number Matrix<Number>::getElementAt(size_t i, size_t j) const {
-    if (i > this->height || j > this->width) {
+    if (i >= this->height || j >= this->width) {
         fprintf(stderr, "Can't subscrit at %li, %li. Shape = (%li, %li)\n", i, j, this->height, this->width);
         throw;
     }
@@ -106,7 +108,7 @@ Number Matrix<Number>::getElementAt(size_t i, size_t j) const {
 
 template <class Number>
 Number Matrix<Number>::setElementAt(size_t i, size_t j, Number el) {
-    if (i > this->height || j > this->width) {
+    if (i >= this->height || j >= this->width) {
         fprintf(stderr, "Can't subscrit at %li, %li. Shape = (%li, %li)\n", i, j, this->height, this->width);
         throw;
     }
@@ -243,6 +245,32 @@ void Matrix<Number>::apply(Number func(Number)) {
             this->setElementAt(i, j, func(this->getElementAt(i, j)));
         }
     }
+}
+
+template <class Number>
+Matrix<Number> Matrix<Number>::getLine(unsigned n) const {
+    if (n >= this->height) {
+        fprintf(stderr, "Can't subscrit line at %i.\n", n);
+        throw;
+    }
+    Matrix result(1, width);
+    for (size_t i = 0; i < this->width; i++) {
+        result.setElementAt(0, i, this->getElementAt(n, i));
+    }
+    return result;
+}
+
+template <class Number>
+Matrix<Number> Matrix<Number>::getRow(unsigned n) const {
+    if (n >= this->width) {
+        fprintf(stderr, "Can't subscrit row at %i.\n", n);
+        throw;
+    }
+    Matrix result(height, 1);
+    for (size_t i = 0; i < this->height; i++) {
+        result.setElementAt(i, 0, this->getElementAt(i, n));
+    }
+    return result;
 }
 
 template <class Number>

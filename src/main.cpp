@@ -8,6 +8,7 @@ int main() {
 	A.display();
     A.apply([](float x){ return x *x; });
     A.display();
+    A.getRow(1).display();
 
 	return 0;
 }
