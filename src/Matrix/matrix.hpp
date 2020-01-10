@@ -31,6 +31,7 @@ public:
     Matrix<Number> exponential() const;
     Matrix<Number> power(unsigned n) const;
     Number sum() const;
+    void apply(Number func(Number));
     bool eq(const Matrix<Number>& m) const;
     Matrix<Number> transpose() const;
 
@@ -233,6 +234,15 @@ Number Matrix<Number>::sum() const {
         }
     }
     return result;
+}
+
+template <class Number>
+void Matrix<Number>::apply(Number func(Number)) {
+    for (size_t i = 0; i < this->height; i++) {
+        for (size_t j = 0; j < this->width; j++) {
+            this->setElementAt(i, j, func(this->getElementAt(i, j)));
+        }
+    }
 }
 
 template <class Number>
