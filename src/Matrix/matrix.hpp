@@ -23,6 +23,7 @@ public:
     /* Operations */
     Matrix<Number> add(const Matrix& m, bool gpu = true) const;
     Matrix<Number> add(Number m) const;
+    Matrix<Number> sub(const Matrix& m) const;
     Matrix<Number> sub(Number m) const;
     Matrix<Number> dot(const Matrix<Number>& m, bool gpu = true) const;
     Matrix<Number> dot(Number m) const;
@@ -40,6 +41,7 @@ public:
     /* Operators */
     Matrix<Number> operator + (const Matrix&);
     Matrix<Number> operator * (const Matrix&);
+    Matrix<Number> operator - (const Matrix&);
     bool operator == (const Matrix&);
 
     /* Display */
@@ -136,6 +138,17 @@ Matrix<Number> Matrix<Number>::add(Number m) const {
     for (size_t i = 0; i < this->height; i++) {
         for (size_t j = 0; j < this->width; j++) {
             result.setElementAt(i, j, this->getElementAt(i, j) + m);
+        }
+    }
+    return result;
+}
+
+template <class Number>
+Matrix<Number> Matrix<Number>::sub(const Matrix& m) const {
+    Matrix result(height, width);
+    for (size_t i = 0; i < this->height; i++) {
+        for (size_t j = 0; j < this->width; j++) {
+            result.setElementAt(i, j, this->getElementAt(i, j) - m.getElementAt(i, j));
         }
     }
     return result;
@@ -315,6 +328,11 @@ Matrix<Number> Matrix<Number>::operator + (const Matrix& m) {
 template <class Number>
 Matrix<Number> Matrix<Number>::operator * (const Matrix& m) {
     return this->dot(m);
+}
+
+template <class Number>
+Matrix<Number> Matrix<Number>::operator - (const Matrix& m) {
+    return this->sub(m);
 }
 
 template <class Number>
