@@ -178,7 +178,7 @@ Matrix<Number> Matrix<Number>::sub(Number m) const {
 
 template <class Number>
 Matrix<Number> Matrix<Number>::dot(const Matrix& m, bool gpu) const {
-    if (this->width != m->height) {
+    if (this->width != m.height) {
         fprintf(stderr, "Can't multiply a matrix of shape (%li, %li) with a matrix of shape (%li, %li).\n", this->height, this->width, m.height, m.width);
         throw;
     }
