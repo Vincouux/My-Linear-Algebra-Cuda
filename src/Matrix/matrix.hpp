@@ -333,7 +333,7 @@ Matrix<Number> Matrix<Number>::transpose() const {
     Matrix<Number> result(this->width, this->height);
     for (size_t i = 0; i < this->height; i++) {
         for (size_t j = 0; j < this->width; j++) {
-            result.setElementAt(i, j, this->getElementAt(j, i));
+            result.setElementAt(j, i, this->getElementAt(i, j));
         }
     }
     return result;

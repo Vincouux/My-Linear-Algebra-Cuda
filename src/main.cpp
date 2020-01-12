@@ -10,5 +10,9 @@ int main() {
     B.display();
     Matrix<float> C = B % A;
     C.display();
+    Matrix<float> D = Matrix<float>({{1}, {2}, {3}});
+    D.display();
+    D.transpose().display();
+    D.transpose().transpose().display();
 	return 0;
 }
