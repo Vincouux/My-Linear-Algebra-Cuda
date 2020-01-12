@@ -64,6 +64,7 @@ Matrix<Number>::Matrix(size_t height, size_t width) {
     this->height = height;
     this->width = width;
     this->array = new Number[this->height * this->width];
+    srand(time(NULL));
     for (size_t i = 0; i < height * width; i++) {
         this->array[i] = -1 + rand() / Number(RAND_MAX) * 2;
     }
@@ -78,7 +79,6 @@ Matrix<Number>::Matrix(std::initializer_list<std::initializer_list<Number>> arr)
     this->height = (int)arr.size();
     this->width = (int)arr.begin()->size();
     this->array = new Number[this->height * this->width];
-    srand(time(NULL));
     for (size_t i = 0; i < height; i++) {
         for (size_t j = 0; j < width; j++) {
             this->setElementAt(i, j, (arr.begin() + i)->begin()[j]);

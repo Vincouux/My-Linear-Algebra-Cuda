@@ -14,5 +14,7 @@ int main() {
     D.display();
     D.transpose().display();
     D.transpose().transpose().display();
+    Matrix<float> E = Matrix<float>(10, 10);
+    E.display();
 	return 0;
 }
