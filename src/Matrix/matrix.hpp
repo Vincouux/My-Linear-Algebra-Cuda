@@ -27,6 +27,7 @@ public:
     Matrix<Number> sub(Number m) const;
     Matrix<Number> dot(const Matrix<Number>& m, bool gpu = true) const;
     Matrix<Number> dot(Number m) const;
+    Matrix<Number> multiply(const Matrix<Number>& m) const;
     Matrix<Number> divide(Number m) const;
     Matrix<Number> inverse(Number m) const;
     Matrix<Number> exponential() const;
@@ -39,9 +40,10 @@ public:
     Matrix<Number> transpose() const;
 
     /* Operators */
-    Matrix<Number> operator + (const Matrix&);
-    Matrix<Number> operator * (const Matrix&);
-    Matrix<Number> operator - (const Matrix&);
+    Matrix<Number> operator + (const Matrix&) const;
+    Matrix<Number> operator * (const Matrix&) const;
+    Matrix<Number> operator - (const Matrix&) const;
+    Matrix<Number> operator % (const Matrix&) const;
     bool operator == (const Matrix&);
 
     /* Display */
@@ -86,7 +88,8 @@ Matrix<Number>::Matrix(std::initializer_list<std::initializer_list<Number>> arr)
 
 template <class Number>
 Matrix<Number>::~Matrix() {
-    delete[] this->array;
+    //Fix me
+    //delete[] this->array;
 }
 
 template <class Number>
@@ -111,7 +114,7 @@ Number Matrix<Number>::getElementAt(size_t i, size_t j) const {
 template <class Number>
 Number Matrix<Number>::setElementAt(size_t i, size_t j, Number el) {
     if (i >= this->height || j >= this->width) {
-        fprintf(stderr, "Can't subscrit at %li, %li. Shape = (%li, %li)\n", i, j, this->height, this->width);
+        fprintf(stderr, "Can't set element at %li, %li. Shape = (%li, %li)\n", i, j, this->height, this->width);
         throw;
     }
     return this->array[i * this->width + j] = el;
@@ -119,6 +122,10 @@ Number Matrix<Number>::setElementAt(size_t i, size_t j, Number el) {
 
 template <class Number>
 Matrix<Number> Matrix<Number>::add(const Matrix& m, bool gpu) const {
+    if (m.height != this->height || m.width != this->width) {
+        fprintf(stderr, "Can't add element wise a matrix of shape (%li, %li) with a matrix of shape (%li, %li).\n", this->height, this->width, m.height, m.width);
+        throw;
+    }
     Matrix result(height, width);
     if (gpu) {
         Wrapper().add(this->array, m.array, result.array, this->width * this->height);
@@ -145,6 +152,10 @@ Matrix<Number> Matrix<Number>::add(Number m) const {
 
 template <class Number>
 Matrix<Number> Matrix<Number>::sub(const Matrix& m) const {
+    if (m.height != this->height || m.width != this->width) {
+        fprintf(stderr, "Can't subtract element wise a matrix of shape (%li, %li) with a matrix of shape (%li, %li).\n", this->height, this->width, m.height, m.width);
+        throw;
+    }
     Matrix result(height, width);
     for (size_t i = 0; i < this->height; i++) {
         for (size_t j = 0; j < this->width; j++) {
@@ -167,6 +178,10 @@ Matrix<Number> Matrix<Number>::sub(Number m) const {
 
 template <class Number>
 Matrix<Number> Matrix<Number>::dot(const Matrix& m, bool gpu) const {
+    if (this->width != m->height) {
+        fprintf(stderr, "Can't multiply a matrix of shape (%li, %li) with a matrix of shape (%li, %li).\n", this->height, this->width, m.height, m.width);
+        throw;
+    }
     Matrix<Number> result(this->height, m.width);
     if (gpu) {
         Wrapper().dot(this->array, m.array, result.array, this->height, m.width, this->width);
@@ -191,6 +206,21 @@ Matrix<Number> Matrix<Number>::dot(Number m) const {
     for (size_t i = 0; i < this->height; i++) {
         for (size_t j = 0; j < this->width; j++) {
             result.setElementAt(i, j, this->getElementAt(i, j) * m);
+        }
+    }
+    return result;
+}
+
+template <class Number>
+Matrix<Number> Matrix<Number>::multiply(const Matrix<Number>& m) const {
+    if (m.height != this->height || m.width != this->width) {
+        fprintf(stderr, "Can't multiply element wise a matrix of shape (%li, %li) with a matrix of shape (%li, %li).\n", this->height, this->width, m.height, m.width);
+        throw;
+    }
+    Matrix result(height, width);
+    for (size_t i = 0; i < this->height; i++) {
+        for (size_t j = 0; j < this->width; j++) {
+            result.setElementAt(i, j, this->getElementAt(i, j) * m.getElementAt(i, j));
         }
     }
     return result;
@@ -321,18 +351,23 @@ void Matrix<Number>::display() const {
 }
 
 template <class Number>
-Matrix<Number> Matrix<Number>::operator + (const Matrix& m) {
+Matrix<Number> Matrix<Number>::operator + (const Matrix& m) const {
     return this->add(m);
 }
 
 template <class Number>
-Matrix<Number> Matrix<Number>::operator * (const Matrix& m) {
+Matrix<Number> Matrix<Number>::operator * (const Matrix& m) const {
     return this->dot(m);
 }
 
 template <class Number>
-Matrix<Number> Matrix<Number>::operator - (const Matrix& m) {
+Matrix<Number> Matrix<Number>::operator - (const Matrix& m) const {
     return this->sub(m);
+}
+
+template <class Number>
+Matrix<Number> Matrix<Number>::operator % (const Matrix& m) const {
+    return this->multiply(m);
 }
 
 template <class Number>

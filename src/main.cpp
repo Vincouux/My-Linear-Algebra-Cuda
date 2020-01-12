@@ -8,7 +8,7 @@ int main() {
 	A.display();
 	Matrix<float> B = A.transpose();
     B.display();
-    Matrix<float> C = B - A;
+    Matrix<float> C = B % A;
     C.display();
 	return 0;
 }
