@@ -6,6 +6,7 @@
 #include <cmath>
 #include <string>
 #include <algorithm>
+#include <memory>
 
 #include "kernels.cuh"
 
@@ -17,7 +18,6 @@ public:
     Matrix<Number>(size_t height, size_t width);
     Matrix<Number>(std::initializer_list<std::initializer_list<Number>> array);
     Matrix<Number>(std::string path);
-    ~Matrix<Number>();
 
     /* Getters */
     size_t getWidth() const;
@@ -57,7 +57,7 @@ public:
 private:
     size_t height;
     size_t width;
-    Number* array;
+    std::vector<Number> array;
 };
 
 template <class Number>
@@ -68,7 +68,7 @@ Matrix<Number>::Matrix() {
                   "Type not allowed. Use <int>, <float> or <double>.");
     this->height = 0;
     this->width = 0;
-    this->array = nullptr;
+    this->array = std::vector<Number>(0);
 }
 
 template <class Number>
@@ -79,10 +79,13 @@ Matrix<Number>::Matrix(size_t height, size_t width) {
                   "Type not allowed. Use <int>, <float> or <double>.");
     this->height = height;
     this->width = width;
-    this->array = new Number[this->height * this->width];
+    this->array = std::vector<Number>(this->height * this->width);
     srand(time(NULL));
-    for (size_t i = 0; i < height * width; i++) {
-        this->array[i] = -1 + rand() / Number(RAND_MAX) * 2;
+    for (size_t i = 0; i < height; i++) {
+        for (size_t j = 0; j < width; j++) {
+            Number n = -1 + rand() / Number(RAND_MAX) * 2;
+            this->setElementAt(i, j, n);
+        }
     }
 }
 
@@ -94,7 +97,7 @@ Matrix<Number>::Matrix(std::initializer_list<std::initializer_list<Number>> arr)
                   "Type not allowed. Use <int>, <float> or <double>.");
     this->height = (int)arr.size();
     this->width = (int)arr.begin()->size();
-    this->array = new Number[this->height * this->width];
+    this->array = std::vector<Number>(this->height * this->width);
     for (size_t i = 0; i < height; i++) {
         for (size_t j = 0; j < width; j++) {
             this->setElementAt(i, j, (arr.begin() + i)->begin()[j]);
@@ -116,7 +119,7 @@ Matrix<Number>::Matrix(std::string path) {
             this->width += 1;
         }
     }
-    this->array = new Number[this->height * this->width];
+    this->array = std::vector<Number>(this->height * this->width);
     unsigned i = 0;
     unsigned j = 0;
     while (!file.eof()) {
@@ -127,12 +130,6 @@ Matrix<Number>::Matrix(std::string path) {
         i += (j == width) ? 1 : 0;
         j %= width;
     }
-}
-
-template <class Number>
-Matrix<Number>::~Matrix() {
-    if (this->array != nullptr)
-        delete[] this->array;
 }
 
 template <class Number>
@@ -171,7 +168,7 @@ Matrix<Number> Matrix<Number>::add(const Matrix& m, bool gpu) const {
     }
     Matrix result(height, width);
     if (gpu) {
-        Wrapper().add(this->array, m.array, result.array, this->width * this->height);
+        Wrapper().add((Number*)&this->array[0], (Number*)&m.array[0], (Number*)&result.array[0], this->width * this->height);
     } else {
         for (size_t i = 0; i < this->height; i++) {
             for (size_t j = 0; j < this->width; j++) {
@@ -227,7 +224,7 @@ Matrix<Number> Matrix<Number>::dot(const Matrix& m, bool gpu) const {
     }
     Matrix<Number> result(this->height, m.width);
     if (gpu) {
-        Wrapper().dot(this->array, m.array, result.array, this->height, m.width, this->width);
+        Wrapper().dot((Number*)&this->array[0], (Number*)&m.array[0], (Number*)&result.array[0], this->height, m.width, this->width);
     } else {
         Number val = 0;
         for (size_t i = 0; i < this->height; i++) {

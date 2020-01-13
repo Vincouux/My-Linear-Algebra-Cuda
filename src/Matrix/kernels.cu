@@ -56,7 +56,7 @@ __host__ void addKernelWrapper(Number* m1, Number* m2, Number* m3, size_t size) 
 }
 
 template <class Number>
-__global__ void dotKernel(Number* d_m1, Number* d_m2, Number* d_m3, int resultRows, int resultColumns, int interiorColumns) {
+__global__ void dotKernel(Number* d_m1, Number* d_m2, Number* d_m3, size_t resultRows, size_t resultColumns, size_t interiorColumns) {
     int index = blockIdx.x * 1024 + threadIdx.y * 32 + threadIdx.x;
     if (index < resultRows * resultColumns) {
         d_m3[index] = 0;
@@ -67,7 +67,7 @@ __global__ void dotKernel(Number* d_m1, Number* d_m2, Number* d_m3, int resultRo
 }
 
 template <class Number>
-__host__ void dotKernelWrapper(Number* m1, Number* m2, Number* m3, int resultRows, int resultColumns, int interiorColumns) {
+__host__ void dotKernelWrapper(Number* m1, Number* m2, Number* m3, size_t resultRows, size_t resultColumns, size_t interiorColumns) {
     // Pointer of arrays.
     Number* d_m1;
     Number* d_m2;
@@ -102,6 +102,6 @@ __host__ void dotKernelWrapper(Number* m1, Number* m2, Number* m3, int resultRow
 template void Wrapper::add(int* m1, int* m2, int* m3, size_t size);
 template void Wrapper::add(float* m1, float* m2, float* m3, size_t size);
 template void Wrapper::add(double* m1, double* m2, double* m3, size_t size);
-template void Wrapper::dot(int* m1, int* m2, int* m3, int resultRows, int resultColumns, int interiorColumns);
-template void Wrapper::dot(float* m1, float* m2, float* m3, int resultRows, int resultColumns, int interiorColumns);
-template void Wrapper::dot(double* m1, double* m2, double* m3, int resultRows, int resultColumns, int interiorColumns);
+template void Wrapper::dot(int* m1, int* m2, int* m3, size_t resultRows, size_t resultColumns, size_t interiorColumns);
+template void Wrapper::dot(float* m1, float* m2, float* m3, size_t resultRows, size_t resultColumns, size_t interiorColumns);
+template void Wrapper::dot(double* m1, double* m2, double* m3, size_t resultRows, size_t resultColumns, size_t interiorColumns);
