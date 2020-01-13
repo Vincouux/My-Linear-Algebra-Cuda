@@ -7,6 +7,7 @@
 #include <string>
 #include <algorithm>
 #include <memory>
+#include <iomanip>
 
 #include "kernels.cuh"
 
@@ -383,7 +384,8 @@ template <class Number>
 void Matrix<Number>::display() const {
     for (size_t i = 0; i < this->height; i++) {
         for (size_t j = 0; j < this->width; j++) {
-            std::cout << this->getElementAt(i, j) << " ";
+            float n = (float)this->getElementAt(i, j);
+            printf("%c%.*f  ", n >= 0 ? ' ' : '\0', 6, n);
         }
         std::cout << "\n";
     }
