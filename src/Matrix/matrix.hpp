@@ -13,6 +13,7 @@ template <class Number>
 class Matrix {
 public:
     /* Constructors */
+    Matrix<Number>();
     Matrix<Number>(size_t height, size_t width);
     Matrix<Number>(std::initializer_list<std::initializer_list<Number>> array);
     Matrix<Number>(std::string path);
@@ -58,6 +59,17 @@ private:
     size_t width;
     Number* array;
 };
+
+template <class Number>
+Matrix<Number>::Matrix() {
+    static_assert(std::is_same<Number, int>::value ||
+                  std::is_same<Number, float>::value ||
+                  std::is_same<Number, double>::value,
+                  "Type not allowed. Use <int>, <float> or <double>.");
+    this->height = 0;
+    this->width = 0;
+    this->array = nullptr;
+}
 
 template <class Number>
 Matrix<Number>::Matrix(size_t height, size_t width) {
@@ -119,8 +131,8 @@ Matrix<Number>::Matrix(std::string path) {
 
 template <class Number>
 Matrix<Number>::~Matrix() {
-    //Fix me
-    //delete[] this->array;
+    if (this->array != nullptr)
+        delete[] this->array;
 }
 
 template <class Number>
