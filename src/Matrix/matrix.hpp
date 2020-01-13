@@ -2,7 +2,10 @@
 #define MATRIX_H
 
 #include <iostream>
+#include <fstream>
 #include <cmath>
+#include <string>
+#include <algorithm>
 
 #include "kernels.cuh"
 
@@ -12,13 +15,14 @@ public:
     /* Constructors */
     Matrix<Number>(size_t height, size_t width);
     Matrix<Number>(std::initializer_list<std::initializer_list<Number>> array);
+    Matrix<Number>(std::string path);
     ~Matrix<Number>();
 
     /* Getters */
     size_t getWidth() const;
     size_t getHeight() const;
     Number getElementAt(size_t i, size_t j) const;
-    Number setElementAt(size_t i, size_t j, Number el);
+    void setElementAt(size_t i, size_t j, Number el);
 
     /* Operations */
     Matrix<Number> add(const Matrix& m, bool gpu = true) const;
@@ -87,6 +91,33 @@ Matrix<Number>::Matrix(std::initializer_list<std::initializer_list<Number>> arr)
 }
 
 template <class Number>
+Matrix<Number>::Matrix(std::string path) {
+    std::ifstream file;
+    file.open(path);
+    this->height = std::count(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>(), '\n');
+    file.seekg(0);
+    std::string line;
+    std::getline(file, line);
+    this->width = 1;
+    for (unsigned i = 0; i < line.size(); i++) {
+        if (line[i] == ' ') {
+            this->width += 1;
+        }
+    }
+    this->array = new Number[this->height * this->width];
+    unsigned i = 0;
+    unsigned j = 0;
+    while (!file.eof()) {
+        int tmp;
+        file >> tmp;
+        this->setElementAt(i, j, (Number)tmp);
+        j += 1;
+        i += (j == width) ? 1 : 0;
+        j %= width;
+    }
+}
+
+template <class Number>
 Matrix<Number>::~Matrix() {
     //Fix me
     //delete[] this->array;
@@ -112,12 +143,12 @@ Number Matrix<Number>::getElementAt(size_t i, size_t j) const {
 }
 
 template <class Number>
-Number Matrix<Number>::setElementAt(size_t i, size_t j, Number el) {
+void Matrix<Number>::setElementAt(size_t i, size_t j, Number el) {
     if (i >= this->height || j >= this->width) {
         fprintf(stderr, "Can't set element at %li, %li. Shape = (%li, %li)\n", i, j, this->height, this->width);
         throw;
     }
-    return this->array[i * this->width + j] = el;
+    this->array[i * this->width + j] = el;
 }
 
 template <class Number>
