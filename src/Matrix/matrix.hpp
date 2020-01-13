@@ -17,6 +17,7 @@ public:
     /* Constructors */
     Matrix<Number>();
     Matrix<Number>(size_t height, size_t width);
+    Matrix<Number>(size_t height, size_t width, Number min, Number max);
     Matrix<Number>(std::initializer_list<std::initializer_list<Number>> array);
     Matrix<Number>(std::string path);
 
@@ -85,6 +86,24 @@ Matrix<Number>::Matrix(size_t height, size_t width) {
     for (size_t i = 0; i < height; i++) {
         for (size_t j = 0; j < width; j++) {
             Number n = -1 + rand() / Number(RAND_MAX) * 2;
+            this->setElementAt(i, j, n);
+        }
+    }
+}
+
+template <class Number>
+Matrix<Number>::Matrix(size_t height, size_t width, Number min, Number max) {
+    static_assert(std::is_same<Number, int>::value ||
+                  std::is_same<Number, float>::value ||
+                  std::is_same<Number, double>::value,
+                  "Type not allowed. Use <int>, <float> or <double>.");
+    this->height = height;
+    this->width = width;
+    this->array = std::vector<Number>(this->height * this->width);
+    srand(time(NULL));
+    for (size_t i = 0; i < height; i++) {
+        for (size_t j = 0; j < width; j++) {
+            Number n = min + (max - min) * (rand() / Number(RAND_MAX));
             this->setElementAt(i, j, n);
         }
     }

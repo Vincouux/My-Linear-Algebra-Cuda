@@ -1,9 +1,9 @@
 #include "Matrix/matrix.hpp"
 
 int main() {
-	Matrix<float> A = Matrix<float>(10, 10);
+	Matrix<float> A = Matrix<float>(10, 10, -0.25f, 0.25f);
 	A.display();
-	A.setElementAt(0, 0, A.getElementAt(0, 0) + 2);
+	A = A * 2.f;
 	A.display();
 	return 0;
 }
