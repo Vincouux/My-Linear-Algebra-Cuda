@@ -21,6 +21,7 @@ Matrix<int> C = Matrix<double>(10, 10);
 Matrix<int> D = Matrix<int>({{1, 2, 3}, {4, 5, 6}});
 ```
 
+### Bastic operations
 ```cpp
 /* Basic Operations between Matrix */
 Matrix<float> E = A + A;
@@ -38,6 +39,7 @@ Matrix<float> J = 2.f * A;
 Matrix<float> K = 2.f / A;
 ```
 
+# Methods
 ```
 /* Element wise operation */
 Matrix<float> L = A.exponential();
