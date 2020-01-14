@@ -8,16 +8,16 @@
 ### Instantiate a new Matrix
 
 ```cpp
+/* Random Matrix of size 10, 10 */
+Matrix<float> A = Matrix<float>(10, 10);
+
 /* Empty matrix */
-Matrix<int> A = Matrix<int>();
+Matrix<double> B = Matrix<double>();
 
-/* With random values */
-Matrix<int> B = Matrix<float>(10, 10);
+/* Random Matrix of size 10, 10 with values between min & max */
+Matrix<float> C = Matrix<float>(10, 10, -0.5f, 0.5f);
 
-/* With random values */
-Matrix<int> C = Matrix<double>(10, 10);
-
-/* Using initializer list */
+/* Matrix of size 2, 3 with initializer list */
 Matrix<int> D = Matrix<int>({{1, 2, 3}, {4, 5, 6}});
 ```
 
