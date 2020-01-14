@@ -56,5 +56,5 @@ Matrix<float> P = A.apply([](float x) { return 2.f * x; });
 
 ## Benchmarks
 
-![benchmark](https://github.com/Choqs/My-Linear-Algebra-Cuda/blob/master/others/benchmark.png)
+![benchmark](https://github.com/Choqs/My-Linear-Algebra-Cuda/blob/master/others/benchmark.png){:height="500px" width="1000px"}
 
