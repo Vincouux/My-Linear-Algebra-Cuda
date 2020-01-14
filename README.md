@@ -8,24 +8,46 @@
 ### Instantiate a new Matrix
 
 ```cpp
+/* Empty matrix */
+Matrix<int> A = Matrix<int>();
+
 /* With random values */
-Matrix<int> A = Matrix<int>(2000, 2000);
-Matrix<float> B = Matrix<float>(2000, 2000);
-Matrix<double> C = Matrix<double>(2000, 2000);
+Matrix<int> B = Matrix<float>(10, 10);
+
+/* With random values */
+Matrix<int> C = Matrix<double>(10, 10);
 
 /* Using initializer list */
-Matrix<int> A = Matrix<int>({{1, 2, 3}, {4, 5, 6}});
+Matrix<int> D = Matrix<int>({{1, 2, 3}, {4, 5, 6}});
 ```
 
 ```cpp
-/* Basic Operations on GPU */
-Matrix<int> D = A + A;
-Matrix<int> E = A * A;
-
-/* Basic Operations on CPU */
-Matrix<int> F = A.add(A, false);
-Matrix<int> G = A.dot(A, false);
-bool eq = E == G;
+/* Basic Operations between Matrix */
+Matrix<float> E = A + A;
+Matrix<float> G = A - A;
+Matrix<float> F = A * A;
+Matrix<float> G = A / A;
+bool eq = (E == G);
 ```
 
-> Work In Progress
+```cpp
+/* Basic Operations between Matrix & Number */
+Matrix<float> H = 2.f + A;
+Matrix<float> I = 2.f - A;
+Matrix<float> J = 2.f * A;
+Matrix<float> K = 2.f / A;
+```
+
+```
+/* Element wise operation */
+Matrix<float> L = A.exponential();
+Matrix<float> M = A.power(2);
+```
+
+```cpp
+/* Other methods */
+Matrix<float> N = A.getLine(5);
+Matrix<float> O = A.getRow(5);
+Matrix<float> P = A.transpose();
+Matrix<float> P = A.apply([](float x) { return 2.f * x; });
+```
