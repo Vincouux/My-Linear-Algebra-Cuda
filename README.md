@@ -40,7 +40,7 @@ Matrix<float> K = 2.f / A;
 ```
 
 # Methods
-```
+```cpp
 /* Element wise operation */
 Matrix<float> L = A.exponential();
 Matrix<float> M = A.power(2);
