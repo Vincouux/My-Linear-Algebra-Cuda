@@ -39,7 +39,7 @@ Matrix<float> J = 2.f * A;
 Matrix<float> K = 2.f / A;
 ```
 
-# Methods
+### Methods
 ```cpp
 /* Element wise operation */
 Matrix<float> L = A.exponential();
@@ -53,3 +53,8 @@ Matrix<float> O = A.getRow(5);
 Matrix<float> P = A.transpose();
 Matrix<float> P = A.apply([](float x) { return 2.f * x; });
 ```
+
+## Benchmarks
+
+![benchmark](https://github.com/Choqs/My-Linear-Algebra-Cuda/blob/master/others/benchmark.png)
+
